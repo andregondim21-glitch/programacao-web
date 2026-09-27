@@ -1,0 +1,152 @@
+<div class="row g-4 align-items-start bg-white rounded-4 p-4 border" style="background-color: var(--ps-bg-soft) !important;">
+
+  <div class="col-12 col-md-3">
+    <app-mascote
+      [mensagem]="enviado && form.invalid
+        ? 'Opa, alguns campos precisam de atenção 👀'
+        : (nomePet ? 'Confirmando o pedido do ' + nomePet + ' 🐾' : 'Vamos finalizar sua compra 🛒')"
+      [estado]="enviado && form.invalid ? 'alerta' : 'neutro'"
+      [especie]="petService.pet()?.especie ?? null"
+    ></app-mascote>
+  </div>
+
+  <div class="col-12 col-md-9">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+
+        <div *ngIf="pedidoConfirmadoComSucesso" class="text-center py-4">
+          <p class="h5 fonte-marca mb-2" style="color: var(--ps-primary);">Pedido confirmado! 🎉</p>
+          <p class="text-muted small mb-4">
+            {{ nomePet ? 'Preparando tudo para o ' + nomePet + '.' : 'Preparando o seu pedido.' }}
+          </p>
+          <a routerLink="/" class="btn btn-brand">Voltar para a loja</a>
+        </div>
+
+        <form *ngIf="!pedidoConfirmadoComSucesso" [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
+
+          <fieldset class="mb-4">
+            <legend class="h6 fw-semibold fonte-marca">Dados pessoais</legend>
+
+            <div class="mb-3">
+              <label for="nome" class="form-label small">Nome completo</label>
+              <input id="nome" type="text" class="form-control" formControlName="nome"
+                     [class.is-invalid]="nome.invalid && (nome.touched || enviado)"
+                     placeholder="Ex: Maria Silva" />
+              <div class="invalid-feedback">
+                <ng-container *ngIf="nome.errors?.['required']">Informe seu nome completo.</ng-container>
+                <ng-container *ngIf="nome.errors?.['minlength']">Nome muito curto.</ng-container>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <label for="email" class="form-label small">E-mail</label>
+                <input id="email" type="text" class="form-control" formControlName="email"
+                       [class.is-invalid]="email.invalid && (email.touched || enviado)"
+                       placeholder="voce@email.com" />
+                <div class="invalid-feedback">
+                  <ng-container *ngIf="email.errors?.['required']">Informe seu e-mail.</ng-container>
+                  <ng-container *ngIf="email.errors?.['email']">Informe um e-mail válido.</ng-container>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <label for="cpf" class="form-label small">CPF</label>
+                <input id="cpf" type="text" class="form-control" formControlName="cpf"
+                       [class.is-invalid]="cpf.invalid && (cpf.touched || enviado)"
+                       placeholder="000.000.000-00" />
+                <div class="invalid-feedback">
+                  <ng-container *ngIf="cpf.errors?.['required']">Informe seu CPF.</ng-container>
+                  <ng-container *ngIf="cpf.errors?.['cpfInvalido']">CPF inválido.</ng-container>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mb-4">
+            <legend class="h6 fw-semibold fonte-marca">Endereço de entrega</legend>
+
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <label for="cep" class="form-label small">CEP</label>
+                <input id="cep" type="text" class="form-control" formControlName="cep"
+                       [class.is-invalid]="cep.invalid && (cep.touched || enviado)"
+                       placeholder="00000-000" />
+                <div class="invalid-feedback">
+                  <ng-container *ngIf="cep.errors?.['required']">Informe o CEP.</ng-container>
+                  <ng-container *ngIf="cep.errors?.['cepInvalido']">CEP inválido.</ng-container>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <label for="numero" class="form-label small">Número</label>
+                <input id="numero" type="text" class="form-control" formControlName="numero"
+                       [class.is-invalid]="numero.invalid && (numero.touched || enviado)"
+                       placeholder="123" />
+                <div class="invalid-feedback">Informe o número.</div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <label for="endereco" class="form-label small">Endereço</label>
+              <input id="endereco" type="text" class="form-control" formControlName="endereco"
+                     [class.is-invalid]="endereco.invalid && (endereco.touched || enviado)"
+                     placeholder="Rua, bairro, cidade" />
+              <div class="invalid-feedback">Informe o endereço completo.</div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mb-4">
+            <legend class="h6 fw-semibold fonte-marca">Forma de pagamento</legend>
+
+            <div class="btn-group" role="group" aria-label="Forma de pagamento">
+              <input type="radio" class="btn-check" formControlName="formaPagamento" value="cartao" id="pagCartao" autocomplete="off">
+              <label class="btn btn-outline-brand" for="pagCartao">Cartão</label>
+
+              <input type="radio" class="btn-check" formControlName="formaPagamento" value="pix" id="pagPix" autocomplete="off">
+              <label class="btn btn-outline-brand" for="pagPix">Pix</label>
+
+              <input type="radio" class="btn-check" formControlName="formaPagamento" value="boleto" id="pagBoleto" autocomplete="off">
+              <label class="btn btn-outline-brand" for="pagBoleto">Boleto</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="mb-4">
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" formControlName="presente" id="presente" />
+              <label class="form-check-label small" for="presente">É um presente?</label>
+            </div>
+
+            <div *ngIf="presente.value">
+              <label for="mensagemPresente" class="form-label small">Mensagem do presente</label>
+              <textarea id="mensagemPresente" class="form-control" formControlName="mensagemPresente" rows="2"
+                        [class.is-invalid]="mensagemPresente.invalid && (mensagemPresente.touched || enviado)"
+                        placeholder="Ex: Feliz aniversário, Rex!"></textarea>
+              <div class="invalid-feedback">Escreva uma mensagem ou desmarque a opção de presente.</div>
+            </div>
+          </fieldset>
+
+          <fieldset class="mb-4" *ngIf="cartService.itens().length > 0">
+            <legend class="h6 fw-semibold fonte-marca">Itens do pedido</legend>
+            <div class="d-flex justify-content-between small mb-1" *ngFor="let item of cartService.itens()">
+              <span>{{ item.product.nome }} <span class="text-muted">x{{ item.quantidade }}</span></span>
+              <span>{{ item.product.preco * item.quantidade | currency: 'BRL' }}</span>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between fw-semibold">
+              <span>Total</span>
+              <span style="color: var(--ps-primary);">{{ cartService.totalPreco() | currency: 'BRL' }}</span>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn btn-brand w-100">Confirmar pedido</button>
+          <p class="small text-danger text-center mt-2 mb-0" *ngIf="enviado && form.invalid">
+            Corrija os campos destacados para continuar.
+          </p>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</div>

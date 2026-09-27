@@ -1,0 +1,14 @@
+<div class="text-center" [class.mascote--alerta]="estado === 'alerta'" [class.mascote--feliz]="estado === 'feliz'">
+  <div class="mascote-balao d-inline-block bg-white border rounded-3 px-3 py-2 mb-2 small" *ngIf="mensagem">
+    {{ mensagem }}
+  </div>
+
+  <div class="position-relative d-inline-block">
+    <img src="{{ especieTexto }}.jpg" class="img-fluid"><br>
+    <span class="mascote-expressao position-absolute top-0 start-100 translate-middle" *ngIf="expressao">
+      {{ expressao }}
+    </span>
+  </div>
+
+  <p class="small text-muted mb-0">Bolt, seu guia na loja</p>
+</div>

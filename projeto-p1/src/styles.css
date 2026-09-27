@@ -1,0 +1,72 @@
+
+
+:root {
+  --ps-primary: #2d5a4a;
+  --ps-accent: #1ed897;
+  --ps-highlight: #ffd166;
+  --ps-bg-soft: #eaf2ec;
+  --ps-border: #d8e5dc;
+  --ps-text-muted: #5c6e64;
+  --ps-danger: #d64550;
+}
+
+body {
+  font-family: 'Work Sans', sans-serif;
+  background-color: #EAF2EC;
+}
+
+h1, h2, h3, h4, h5, .fonte-marca {
+  font-family: 'Baloo 2', 'Fredoka', sans-serif;
+}
+
+/* Botão de ação principal da loja (equivalente estilizado do btn-primary) */
+.btn-brand {
+  background-color: var(--ps-accent);
+  border-color: var(--ps-accent);
+  color: #2a1b12;
+  font-weight: 600;
+}
+
+.btn-brand:hover,
+.btn-brand:focus {
+  background-color: var(--ps-accent);
+  filter: brightness(0.95);
+  color: #2a1b12;
+}
+
+/* Variante outline usada nos botões de forma de pagamento (btn-check) */
+.btn-outline-brand {
+  border-color: var(--ps-primary);
+  color: var(--ps-primary);
+}
+
+.btn-outline-brand:hover {
+  background-color: var(--ps-primary);
+  color: #fff;
+}
+
+/* O Bootstrap já estiliza .btn-check:checked + .btn-outline-* com a cor
+   da variante; aqui sobrescrevemos para usar a cor da marca. */
+.btn-check:checked + .btn-outline-brand {
+  background-color: var(--ps-primary);
+  border-color: var(--ps-primary);
+  color: #fff;
+}
+
+.navbar-brand-petshop {
+  color: var(--ps-primary) !important;
+  font-weight: 600;
+}
+
+/* Media query própria: reduz o título da marca e o padding dos cards em
+   telas pequenas, onde o navbar/card do Bootstrap ficam mais apertados.
+   Referência: https://www.w3schools.com/css/css_rwd_mediaqueries.asp */
+@media (max-width: 575.98px) {
+  .navbar-brand-petshop {
+    font-size: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}

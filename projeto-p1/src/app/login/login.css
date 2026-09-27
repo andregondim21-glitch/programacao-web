@@ -1,0 +1,60 @@
+.login-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 1.5rem 0;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .login-side-image {
+      background: #2d5a4a;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .login-side-image i {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+
+    .form-control:focus {
+      border-color: #2d5a4a;
+      box-shadow: 0 0 0 0.2rem rgba(255, 152, 0, 0.25);
+    }
+
+    .btn-pet {
+      background-color: #2d5a4a;
+      border-color: #2d5a4a;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-pet:hover {
+      background-color: #2d5a4a;
+      border-color: #2d5a4a;
+      color: #fff;
+    }
+
+    .link-pet {
+      color: #2d5a4a;
+      text-decoration: none;
+    }
+
+    .link-pet:hover {
+      text-decoration: underline;
+      color: #2d5a4a;
+    }

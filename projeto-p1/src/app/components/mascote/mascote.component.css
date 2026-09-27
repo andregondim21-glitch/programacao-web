@@ -1,0 +1,67 @@
+/* Bootstrap não tem um utilitário pronto para "balão de fala", então
+   usamos a técnica clássica do CSS Tutorial: um pseudo-elemento
+   posicionado de forma absoluta simulando a pontinha do balão.
+   https://www.w3schools.com/css/css_pseudo_elements.asp */
+.mascote-balao {
+  position: relative;
+}
+
+.mascote-balao::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: #ffffff transparent transparent;
+}
+
+.mascote--alerta .mascote-balao {
+  border-color: var(--ps-danger) !important;
+  color: var(--ps-danger);
+}
+
+.mascote--feliz .mascote-balao {
+  border-color: var(--ps-primary) !important;
+}
+
+/* Tamanho "padrão" do mascote em telas médias/grandes. */
+.mascote-avatar {
+  line-height: 1;
+}
+
+/* A imagem do mascote só tem "img-fluid" no HTML (max-width: 100%), então
+   em colunas largas (ex: col-md-4 no desktop) ela poderia crescer demais.
+   Aqui limitamos o tamanho máximo mantendo a proporção. */
+.position-relative.d-inline-block img {
+  max-width: 160px;
+  width: 100%;
+  height: auto;
+}
+
+.mascote-emoji {
+  font-size: 4.5rem;
+}
+
+.mascote-expressao {
+  font-size: 1.3rem;
+}
+
+/* Media query própria: o grid do Bootstrap já empilha as colunas em telas
+   pequenas, mas não encolhe o conteúdo sozinho — aqui reduzimos o mascote
+   e o balão de fala para não dominar a tela no celular.
+   Referência: https://www.w3schools.com/css/css_rwd_mediaqueries.asp */
+@media (max-width: 575.98px) {
+  .mascote-emoji {
+    font-size: 3rem;
+  }
+
+  .mascote-expressao {
+    font-size: 1rem;
+  }
+
+  .mascote-balao {
+    font-size: 0.8rem;
+  }
+}

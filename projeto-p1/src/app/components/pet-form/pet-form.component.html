@@ -1,0 +1,70 @@
+<div class="row g-4 align-items-start bg-white rounded-4 p-4 border" style="background-color: var(--ps-bg-soft) !important;">
+
+  <div class="col-12 col-md-4">
+    <app-mascote
+      [mensagem]="petService.temPetCadastrado() ? petService.saudacaoPersonalizada() : 'Olá! Antes de começar, me conta mais sobre o seu pet...'"
+      [estado]="enviado && form.invalid ? 'alerta' : (petService.temPetCadastrado() ? 'feliz' : 'neutro')"
+      [especie]="especie.value"
+    ></app-mascote>
+  </div>
+
+  <div class="col-12 col-md-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <h2 class="h6 fw-semibold mb-3 fonte-marca">Cadastre seu pet</h2>
+
+        <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
+          <div class="row g-3">
+
+            <div class="col-12 col-sm-6">
+              <label for="nome" class="form-label small">Nome do pet</label>
+              <input id="nome" type="text" class="form-control" formControlName="nome"
+                     [class.is-invalid]="nome.invalid && (nome.touched || enviado)"
+                     placeholder="Ex: Rex" />
+              <div class="invalid-feedback">
+                <ng-container *ngIf="nome.errors?.['required']">Informe o nome do pet.</ng-container>
+                <ng-container *ngIf="nome.errors?.['minlength']">O nome precisa ter pelo menos 2 letras.</ng-container>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label for="especie" class="form-label small">Espécie</label>
+              <select id="especie" class="form-select" formControlName="especie">
+                <option value="cachorro">Cachorro</option>
+                <option value="gato">Gato</option>
+                <option value="ave">Ave</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label for="idade" class="form-label small">Idade (anos)</label>
+              <input id="idade" type="number" class="form-control" formControlName="idade"
+                     [class.is-invalid]="idade.invalid && (idade.touched || enviado)"
+                     placeholder="Ex: 3" />
+              <div class="invalid-feedback">
+                <ng-container *ngIf="idade.errors?.['required']">Informe a idade.</ng-container>
+                <ng-container *ngIf="idade.errors?.['idadeInvalida']">Informe um valor entre 1 e 40 anos.</ng-container>
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <label for="peso" class="form-label small">Peso (kg)</label>
+              <input id="peso" type="number" class="form-control" formControlName="peso"
+                     [class.is-invalid]="peso.invalid && (peso.touched || enviado)"
+                     placeholder="Ex: 12" />
+              <div class="invalid-feedback">
+                <ng-container *ngIf="peso.errors?.['required']">Informe o peso.</ng-container>
+                <ng-container *ngIf="peso.errors?.['pesoInvalido']">Informe um valor entre 1 e 120 kg.</ng-container>
+              </div>
+            </div>
+
+          </div>
+
+          <button type="submit" class="btn btn-brand w-100 mt-4">Salvar meu pet</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>

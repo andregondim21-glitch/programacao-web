@@ -1,0 +1,71 @@
+<div class="container py-4" *ngIf="produto; else semProduto">
+  <button type="button" class="btn btn-outline-brand btn-sm mb-3" (click)="voltar()">
+    &larr; Voltar para a loja
+  </button>
+
+  <div class="card border-0 shadow-sm">
+    <div class="row g-0">
+      <div class="col-12 col-md-5 d-flex align-items-center justify-content-center p-4">
+        <img
+          src="{{ produto.id }}.jpg"
+          class="img-fluid rounded-3"
+          alt="{{ produto.nome }}"
+        />
+      </div>
+
+      <div class="col-12 col-md-7">
+        <div class="card-body">
+          <span class="badge rounded-pill mb-2" style="background-color: rgb(255, 255, 128); color: var(--ps-warning);" *ngIf="produto.promo > 0">
+            Promoção!!!
+          </span>
+          <span class="badge rounded-pill mb-2" style="background-color: var(--ps-bg-soft); color: var(--ps-primary);">
+            {{ produto.categoria }}
+          </span>
+
+          <h1 class="h4 fw-semibold fonte-marca mb-2">{{ produto.nome }}</h1>
+
+          <p class="mb-3" style="color: var(--ps-text-muted);">
+            {{ produto.descricao }}
+          </p>
+
+          <p class="fs-3 fw-semibold mb-2" style="color: var(--ps-primary);" *ngIf="produto.promo === 0">
+            {{ produto.preco | currency: 'BRL' }}
+          </p>
+          <p class="fs-3 fw-semibold mb-2" style="color: var(--ps-primary);" *ngIf="produto.promo > 0">
+          De: <s>{{ produto.preco | currency: 'BRL' }}</s> <br> Por: {{ produto.promo | currency: 'BRL' }}
+          </p>
+
+          <p class="small mb-1" [ngClass]="produto.quantidade > 0 ? 'text-success' : 'text-danger'">
+            {{ produto.quantidade > 0 ? produto.quantidade + ' em estoque' : 'Sem estoque no momento' }}
+          </p>
+
+          <p class="small mb-4" style="color: var(--ps-text-muted);" *ngIf="especiesTexto">
+            Indicado para: <strong>{{ especiesTexto }}</strong>
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-brand w-100"
+            [disabled]="produto.quantidade === 0"
+            (click)="adicionarAoCarrinho()"
+          >
+            Adicionar ao carrinho
+          </button>
+
+          <div class="alert alert-success mt-3 mb-0 py-2 small" *ngIf="adicionado">
+            Produto adicionado ao carrinho!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #semProduto>
+  <div class="container py-5 text-center">
+    <p class="mb-3" style="color: var(--ps-text-muted);">
+      Não encontramos o produto selecionado. Volte para a loja e clique em "Ver mais" em algum item.
+    </p>
+    <button type="button" class="btn btn-brand" (click)="voltar()">Voltar para a loja</button>
+  </div>
+</ng-template>
