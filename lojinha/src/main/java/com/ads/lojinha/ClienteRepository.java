@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository 
 public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
-    @Query(value = "SELECT * FROM cliente WHERE email = :email AND senha = :senha LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM cliente WHERE ativo = 1 AND email = :email AND senha = :senha LIMIT 1", nativeQuery = true)
     public Optional<Cliente> fazerLogin(@Param("email") String email, @Param("senha") String senha);
 
-    @Query(value = "SELECT * FROM cliente WHERE email = :email LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM cliente WHERE ativo = 1 AND email = :email LIMIT 1", nativeQuery = true)
     public Optional<Cliente> buscarPorEmail(@Param("email") String email);
 
     @Modifying

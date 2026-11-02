@@ -1,5 +1,6 @@
 package com.ads.lojinha;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class ClienteController {
         } else {
             return new Cliente();
         }
+    }
+
+    @GetMapping("/api/clientes")
+    public List<Cliente> listar(){
+        // nunca devolve a senha na listagem
+        return bd.findAll().stream().map(this::semSenha).toList();
     }
 
     @PostMapping("/api/cliente")

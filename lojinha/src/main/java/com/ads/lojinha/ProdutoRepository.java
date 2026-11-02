@@ -11,7 +11,7 @@ public interface ProdutoRepository  extends JpaRepository<Produto, Integer> {
     @Query(value = "SELECT * FROM produto WHERE destaque > 0", nativeQuery = true)
     public List<Produto> carregaVitrine();
 
-    @Query (value = "SELECT * FROM produto WHERE nome LIKE :termo or descritivo like :termo", nativeQuery = true)
+    @Query (value = "SELECT * FROM produto WHERE nome LIKE :termo or descricao like :termo", nativeQuery = true)
     public List<Produto> fazerBusca(String termo);
 
 }
