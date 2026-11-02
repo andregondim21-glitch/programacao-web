@@ -1,0 +1,50 @@
+<h3>Clientes</h3>
+
+@if (erro().length > 0) {
+  <div class="alert alert-danger">{{ erro() }}</div>
+}
+@if (carregando()) {
+  <div class="alert alert-info">Carregando clientes...</div>
+}
+@if (!carregando() && erro().length == 0 && lista().length == 0) {
+  <div class="alert alert-warning"><strong>Vazio!</strong> não existem clientes cadastrados!</div>
+}
+
+@if (lista().length > 0) {
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>código</th>
+          <th>nome</th>
+          <th>e-mail</th>
+          <th>telefone</th>
+          <th>documento</th>
+          <th>endereço</th>
+          <th>situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (obj of lista(); track obj.codigo) {
+          <tr>
+            <td>{{ obj.codigo }}</td>
+            <td><b>{{ obj.nome }}</b></td>
+            <td>{{ obj.email }}</td>
+            <td>{{ obj.telefone }}</td>
+            <td>{{ obj.documento }}</td>
+            <td>{{ obj.logradouro }}</td>
+            <td>
+              @if (obj.ativo == 1) {
+                <span class="badge text-bg-success">ativo</span>
+              } @else {
+                <span class="badge text-bg-secondary">inativo</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<button class="btn btn-outline-primary" (click)="carregar()">Atualizar lista</button>

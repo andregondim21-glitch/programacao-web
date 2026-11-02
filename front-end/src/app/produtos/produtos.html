@@ -1,0 +1,62 @@
+<h3>Produtos</h3>
+
+@if (erro().length > 0) {
+  <div class="alert alert-danger">{{ erro() }}</div>
+}
+@if (carregando()) {
+  <div class="alert alert-info">Carregando produtos...</div>
+}
+@if (!carregando() && erro().length == 0 && lista().length == 0) {
+  <div class="alert alert-warning"><strong>Vazio!</strong> não existem produtos cadastrados!</div>
+}
+
+@if (lista().length > 0) {
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>código</th>
+          <th>nome</th>
+          <th>descrição</th>
+          <th class="text-end">valor</th>
+          <th class="text-end">promoção</th>
+          <th class="text-end">estoque</th>
+          <th>destaque</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (obj of lista(); track obj.codigo) {
+          <tr>
+            <td>{{ obj.codigo }}</td>
+            <td><b>{{ obj.nome }}</b></td>
+            <td>{{ obj.descricao }}</td>
+            <td class="text-end">{{ obj.valor | currency: 'BRL' }}</td>
+            <td class="text-end">
+              @if (obj.valorPromo > 0) {
+                {{ obj.valorPromo | currency: 'BRL' }}
+              } @else {
+                -
+              }
+            </td>
+            <td class="text-end">
+              @if (obj.quantidade > 0) {
+                {{ obj.quantidade }}
+              } @else {
+                <span class="badge text-bg-secondary">sem estoque</span>
+              }
+            </td>
+            <td>
+              @if (obj.destaque > 0) {
+                <span class="badge text-bg-warning">sim</span>
+              } @else {
+                não
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+<button class="btn btn-outline-primary" (click)="carregar()">Atualizar lista</button>
