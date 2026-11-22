@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Product } from '../models/product.model';
+import { Product, precoFinal } from '../models/product.model';
 
 export interface CartItem {
   product: Product;
@@ -21,8 +21,9 @@ export class CartService {
     this._itens().reduce((soma, item) => soma + item.quantidade, 0)
   );
 
+  /** Total considerando o preço promocional (mesma regra que o back-end usa ao gravar o pedido). */
   readonly totalPreco = computed(() =>
-    this._itens().reduce((soma, item) => soma + item.quantidade * item.product.preco, 0)
+    this._itens().reduce((soma, item) => soma + item.quantidade * precoFinal(item.product), 0)
   );
 
   adicionar(product: Product): void {
@@ -37,7 +38,7 @@ export class CartService {
     this._itens.set([...itens, { product, quantidade: 1 }]);
   }
 
-  alterarQuantidade(productId: string, delta: number): void {
+  alterarQuantidade(productId: number, delta: number): void {
     this._itens.update((itens) =>
       itens
         .map((item) =>
@@ -47,7 +48,7 @@ export class CartService {
     );
   }
 
-  remover(productId: string): void {
+  remover(productId: number): void {
     this._itens.update((itens) => itens.filter((item) => item.product.id !== productId));
   }
 

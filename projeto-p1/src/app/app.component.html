@@ -12,12 +12,19 @@
           {{ cartService.totalItens() }}
         </span>
       </a>
-      <a routerLink="/login" class="btn btn-outline-brand">
-        👤 Login
-      </a>
-      <a routerLink="/cadastro" class="btn btn-outline-brand">
-        📝 Cadastro
-      </a>
+      @if (auth.logado()) {
+        <span class="align-self-center small fw-medium px-1">Olá, {{ primeiroNome() }}</span>
+        <button type="button" class="btn btn-outline-brand" (click)="sair()">
+          Sair
+        </button>
+      } @else {
+        <a routerLink="/login" class="btn btn-outline-brand">
+          👤 Login
+        </a>
+        <a routerLink="/cadastro" class="btn btn-outline-brand">
+          📝 Cadastro
+        </a>
+      }
     </div>
   </div>
 </nav><br>

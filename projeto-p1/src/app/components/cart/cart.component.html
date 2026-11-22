@@ -25,7 +25,7 @@
               <button type="button" class="btn btn-sm btn-outline-brand"
                       (click)="cartService.alterarQuantidade(item.product.id, 1)">+</button>
               <span class="fw-semibold small" style="min-width: 70px; text-align: right;">
-                {{ item.product.preco * item.quantidade | currency: 'BRL' }}
+                {{ precoFinal(item.product) * item.quantidade | currency: 'BRL' }}
               </span>
               <button type="button" class="btn btn-sm btn-link text-danger"
                       (click)="cartService.remover(item.product.id)" aria-label="Remover item">✕</button>
@@ -52,7 +52,7 @@
             <span class="fw-semibold">Total</span>
             <strong style="color: var(--ps-primary);">{{ cartService.totalPreco() | currency: 'BRL' }}</strong>
           </div>
-          <a href="checkout" class="btn btn-brand w-100">Finalizar compra</a>
+          <a routerLink="/checkout" class="btn btn-brand w-100">Finalizar compra</a>
         </div>
       </div>
     </div>

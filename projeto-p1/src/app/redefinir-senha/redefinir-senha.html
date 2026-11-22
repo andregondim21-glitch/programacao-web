@@ -1,0 +1,72 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="p-4 p-md-5">
+
+      <div class="text-center mb-4">
+        <i class="fa-solid fa-lock fa-2x mb-2" style="color: #2d5a4a;"></i>
+        <h2 class="fw-bold">Criar nova senha</h2>
+        <p class="text-muted">Escolha uma nova senha para a sua conta</p>
+      </div>
+
+      @if (concluido()) {
+        <div class="alert alert-success small">Senha redefinida com sucesso! Já pode entrar com a nova senha.</div>
+        <div class="d-grid">
+          <a routerLink="/login" class="btn btn-pet btn-lg">Ir para o login</a>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="redefinir()" novalidate>
+
+          @if (!tokenNoLink) {
+            <div class="mb-3">
+              <label for="token" class="form-label">Código de redefinição</label>
+              <input type="text" class="form-control" id="token" formControlName="token" placeholder="Cole o código recebido"
+                     [class.is-invalid]="token.invalid && (token.touched || enviado)">
+              <div class="invalid-feedback">Informe o código de redefinição.</div>
+            </div>
+          }
+
+          <div class="mb-3">
+            <label for="novaSenha" class="form-label">Nova senha</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="fa-solid fa-lock icon-pet"></i></span>
+              <input type="password" class="form-control" id="novaSenha" formControlName="novaSenha" placeholder="Crie uma nova senha"
+                     [class.is-invalid]="novaSenha.invalid && (novaSenha.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (novaSenha.errors?.['required']) { Crie uma senha. }
+                @else if (novaSenha.errors?.['minlength']) { A senha deve ter pelo menos 6 caracteres. }
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="confirmarSenha" class="form-label">Confirmar nova senha</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="fa-solid fa-lock icon-pet"></i></span>
+              <input type="password" class="form-control" id="confirmarSenha" formControlName="confirmarSenha" placeholder="Repita a nova senha"
+                     [class.is-invalid]="(confirmarSenha.invalid || form.errors?.['senhasDiferentes']) && (confirmarSenha.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (confirmarSenha.errors?.['required']) { Repita a senha. }
+                @else { As senhas não conferem. }
+              </div>
+            </div>
+          </div>
+
+          @if (erro()) {
+            <div class="alert alert-danger py-2 small">{{ erro() }}</div>
+          }
+
+          <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-pet btn-lg" [disabled]="carregando()">
+              {{ carregando() ? 'Salvando...' : 'Salvar nova senha' }}
+            </button>
+          </div>
+
+          <p class="text-center text-muted mb-0">
+            <a routerLink="/esqueci-senha" class="link-pet fw-semibold">Pedir um novo link</a>
+          </p>
+        </form>
+      }
+
+    </div>
+  </div>
+</div>

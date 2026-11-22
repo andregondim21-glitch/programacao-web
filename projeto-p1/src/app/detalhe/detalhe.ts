@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CartService } from '../services/cart.service';
+import { ProdutoService } from '../services/produto.service';
 import { Product } from '../models/product.model';
 import { Especie } from '../models/pet.model';
 
@@ -12,9 +13,6 @@ const ROTULOS_ESPECIE: Record<Especie, string> = {
   outro: 'Outros pets',
 };
 
-/** Chave usada pela Home para guardar o produto escolhido em "Ver mais". */
-const CHAVE_PRODUTO_SELECIONADO = 'products.data';
-
 @Component({
   imports: [CommonModule],
   selector: 'app-detalhe',
@@ -23,22 +21,38 @@ const CHAVE_PRODUTO_SELECIONADO = 'products.data';
 })
 export class Detalhe implements OnInit {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly produtoService = inject(ProdutoService);
   readonly cartService = inject(CartService);
 
-  /** Produto exibido na tela; null se o usuário chegar aqui sem ter clicado em "Ver mais". */
-  produto: Product | null = null;
+  /** Produto exibido na tela, buscado na API pelo id da rota (/detalhe/:id); null se não existir. */
+  readonly produto = signal<Product | null>(null);
+  readonly carregando = signal(true);
 
   adicionado = false;
 
   ngOnInit(): void {
-    const armazenado = localStorage.getItem(CHAVE_PRODUTO_SELECIONADO);
-    this.produto = armazenado ? (JSON.parse(armazenado) as Product) : null;
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+
+    if (!Number.isInteger(id) || id <= 0) {
+      this.carregando.set(false);
+      return;
+    }
+
+    this.produtoService.buscarPorId(id).subscribe({
+      next: (produto) => {
+        this.produto.set(produto);
+        this.carregando.set(false);
+      },
+      error: () => this.carregando.set(false),
+    });
   }
 
   adicionarAoCarrinho(): void {
-    if (!this.produto) return;
+    const produto = this.produto();
+    if (!produto) return;
 
-    this.cartService.adicionar(this.produto);
+    this.cartService.adicionar(produto);
     this.adicionado = true;
   }
 
@@ -48,7 +62,8 @@ export class Detalhe implements OnInit {
 
   /** Converte a lista de espécies do produto em texto legível ("Cachorros, Gatos"). */
   get especiesTexto(): string {
-    if (!this.produto || this.produto.especies.length === 0) return '';
-    return this.produto.especies.map((especie) => ROTULOS_ESPECIE[especie]).join(', ');
+    const produto = this.produto();
+    if (!produto || produto.especies.length === 0) return '';
+    return produto.especies.map((especie) => ROTULOS_ESPECIE[especie]).join(', ');
   }
 }

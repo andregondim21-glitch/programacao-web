@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { precoFinal } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { MascoteComponent } from '../mascote/mascote.component';
 
@@ -12,4 +13,5 @@ import { MascoteComponent } from '../mascote/mascote.component';
 })
 export class CartComponent {
   readonly cartService = inject(CartService);
+  readonly precoFinal = precoFinal;
 }

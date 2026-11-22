@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { PRODUTOS } from '../../data/products.data';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
 import { PetService } from '../../services/pet.service';
+import { ProdutoService } from '../../services/produto.service';
+import { mensagemDeErro } from '../../utils/erro-api';
 import { PetFormComponent } from '../pet-form/pet-form.component';
-import { Product } from '../../models/product.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,12 +14,16 @@ import { Router } from '@angular/router';
   imports: [CommonModule, PetFormComponent],
   templateUrl: './home.component.html',
 })
-export class HomeComponent {
-  constructor(private router: Router) {}
+export class HomeComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly produtoService = inject(ProdutoService);
   readonly petService = inject(PetService);
   readonly cartService = inject(CartService);
 
-  readonly produtos = PRODUTOS;
+  /** Catálogo vindo do banco de dados (via API). */
+  readonly produtos = signal<Product[]>([]);
+  readonly carregando = signal(true);
+  readonly erro = signal<string | null>(null);
 
   /**
    * Lista de produtos exibida na home. Enquanto não há pet cadastrado,
@@ -29,27 +34,35 @@ export class HomeComponent {
    */
   readonly produtosRecomendados = computed(() => {
     const pet = this.petService.pet();
+    const produtos = this.produtos();
 
     if (!pet) {
-      return this.produtos;
+      return produtos;
     }
 
-    const filtrados = this.produtos.filter((produto) =>
-      produto.especies.includes(pet.especie)
-    );
+    const filtrados = produtos.filter((produto) => produto.especies.includes(pet.especie));
 
-    return filtrados.length > 0 ? filtrados : this.produtos;
+    return filtrados.length > 0 ? filtrados : produtos;
   });
 
-  adicionarAoCarrinho(produtoId: string): void {
-    const produto = this.produtos.find((p) => p.id === produtoId);
-    if (produto) {
-      this.cartService.adicionar(produto);
-    }
+  ngOnInit(): void {
+    this.produtoService.listar().subscribe({
+      next: (lista) => {
+        this.produtos.set(lista);
+        this.carregando.set(false);
+      },
+      error: (e) => {
+        this.erro.set(mensagemDeErro(e, 'Não foi possível carregar os produtos.'));
+        this.carregando.set(false);
+      },
+    });
   }
 
-  verDetalhe(obj: Product) {
-    localStorage.setItem("products.data", JSON.stringify(obj));
-    this.router.navigate(['/detalhe']);
+  adicionarAoCarrinho(produto: Product): void {
+    this.cartService.adicionar(produto);
+  }
+
+  verDetalhe(produto: Product): void {
+    this.router.navigate(['/detalhe', produto.id]);
   }
 }

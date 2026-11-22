@@ -17,12 +17,17 @@
             <p class="text-muted">Entre na sua conta para continuar</p>
           </div>
 
-          <form>
+          <form [formGroup]="form" (ngSubmit)="entrar()" novalidate>
             <div class="mb-3">
               <label for="email" class="form-label">E-mail</label>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="fa-solid fa-envelope" style="color: #2d5a4a;"></i></span>
-                <input type="email" class="form-control" id="email" placeholder="seuemail@exemplo.com" required>
+                <input type="email" class="form-control" id="email" formControlName="email" placeholder="seuemail@exemplo.com"
+                       [class.is-invalid]="email.invalid && (email.touched || enviado)">
+                <div class="invalid-feedback">
+                  @if (email.errors?.['required']) { Informe seu e-mail. }
+                  @else if (email.errors?.['email']) { Informe um e-mail válido. }
+                </div>
               </div>
             </div>
 
@@ -30,28 +35,34 @@
               <label for="senha" class="form-label">Senha</label>
               <div class="input-group">
                 <span class="input-group-text bg-white"><i class="fa-solid fa-lock" style="color: #2d5a4a;"></i></span>
-                <input type="password" class="form-control" id="senha" placeholder="Digite sua senha" required>
+                <input type="password" class="form-control" id="senha" formControlName="senha" placeholder="Digite sua senha"
+                       [class.is-invalid]="senha.invalid && (senha.touched || enviado)">
+                <div class="invalid-feedback">Informe sua senha.</div>
               </div>
             </div>
 
             <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="lembrar">
+                <input class="form-check-input" type="checkbox" id="lembrar" formControlName="lembrar">
                 <label class="form-check-label" for="lembrar">
                   Lembrar de mim
                 </label>
               </div>
-              <a href="#" class="link-pet small">Esqueci minha senha</a>
+              <a routerLink="/esqueci-senha" class="link-pet small">Esqueci minha senha</a>
             </div>
 
+            @if (erro()) {
+              <div class="alert alert-danger py-2 small">{{ erro() }}</div>
+            }
+
             <div class="d-grid mb-3">
-              <button type="submit" class="btn btn-pet btn-lg">
-                <i class="fa-solid fa-right-to-bracket me-2"></i>Entrar
+              <button type="submit" class="btn btn-pet btn-lg" [disabled]="carregando()">
+                <i class="fa-solid fa-right-to-bracket me-2"></i>{{ carregando() ? 'Entrando...' : 'Entrar' }}
               </button>
             </div>
 
             <p class="text-center text-muted mb-0">
-              Não tem uma conta? <a href="cadastro" class="link-pet fw-semibold">Cadastre-se</a>
+              Não tem uma conta? <a routerLink="/cadastro" class="link-pet fw-semibold">Cadastre-se</a>
             </p>
           </form>
 

@@ -8,12 +8,17 @@
         <p class="text-muted">Preencha os dados abaixo para começar</p>
       </div>
 
-      <form>
+      <form [formGroup]="form" (ngSubmit)="cadastrar()" novalidate>
         <div class="mb-3">
           <label for="nome" class="form-label">Nome completo</label>
           <div class="input-group">
             <span class="input-group-text bg-white"><i class="fa-solid fa-user icon-pet"></i></span>
-            <input type="text" class="form-control" id="nome" placeholder="Digite seu nome completo" required>
+            <input type="text" class="form-control" id="nome" formControlName="nome" placeholder="Digite seu nome completo"
+                   [class.is-invalid]="nome.invalid && (nome.touched || enviado)">
+            <div class="invalid-feedback">
+              @if (nome.errors?.['required']) { Informe seu nome completo. }
+              @else if (nome.errors?.['minlength']) { Nome muito curto. }
+            </div>
           </div>
         </div>
 
@@ -22,7 +27,12 @@
             <label for="email" class="form-label">E-mail</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fa-solid fa-envelope icon-pet"></i></span>
-              <input type="email" class="form-control" id="email" placeholder="seuemail@exemplo.com" required>
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="seuemail@exemplo.com"
+                     [class.is-invalid]="email.invalid && (email.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (email.errors?.['required']) { Informe seu e-mail. }
+                @else if (email.errors?.['email']) { Informe um e-mail válido. }
+              </div>
             </div>
           </div>
 
@@ -30,7 +40,7 @@
             <label for="telefone" class="form-label">Telefone</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fa-solid fa-phone icon-pet"></i></span>
-              <input type="tel" class="form-control" id="telefone" placeholder="(00) 00000-0000">
+              <input type="tel" class="form-control" id="telefone" formControlName="telefone" placeholder="(00) 00000-0000">
             </div>
           </div>
         </div>
@@ -39,7 +49,12 @@
           <label for="cpf" class="form-label">CPF</label>
           <div class="input-group">
             <span class="input-group-text bg-white"><i class="fa-solid fa-id-card icon-pet"></i></span>
-            <input type="text" class="form-control" id="cpf" placeholder="000.000.000-00" required>
+            <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
+                   [class.is-invalid]="cpf.invalid && (cpf.touched || enviado)">
+            <div class="invalid-feedback">
+              @if (cpf.errors?.['required']) { Informe seu CPF. }
+              @else if (cpf.errors?.['cpfInvalido']) { CPF inválido. }
+            </div>
           </div>
         </div>
 
@@ -48,7 +63,12 @@
             <label for="cep" class="form-label">CEP</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fa-solid fa-map-pin icon-pet"></i></span>
-              <input type="text" class="form-control" id="cep" placeholder="00000-000" required>
+              <input type="text" class="form-control" id="cep" formControlName="cep" placeholder="00000-000"
+                     [class.is-invalid]="cep.invalid && (cep.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (cep.errors?.['required']) { Informe o CEP. }
+                @else if (cep.errors?.['cepInvalido']) { CEP inválido. }
+              </div>
             </div>
           </div>
 
@@ -56,7 +76,9 @@
             <label for="endereco" class="form-label">Endereço</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fa-solid fa-location-dot icon-pet"></i></span>
-              <input type="text" class="form-control" id="endereco" placeholder="Rua, número, bairro, cidade - UF" required>
+              <input type="text" class="form-control" id="endereco" formControlName="endereco" placeholder="Rua, número, bairro, cidade - UF"
+                     [class.is-invalid]="endereco.invalid && (endereco.touched || enviado)">
+              <div class="invalid-feedback">Informe o endereço.</div>
             </div>
           </div>
         </div>
@@ -66,7 +88,12 @@
             <label for="senha" class="form-label">Senha</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fa-solid fa-lock icon-pet"></i></span>
-              <input type="password" class="form-control" id="senha" placeholder="Crie uma senha" required>
+              <input type="password" class="form-control" id="senha" formControlName="senha" placeholder="Crie uma senha"
+                     [class.is-invalid]="senha.invalid && (senha.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (senha.errors?.['required']) { Crie uma senha. }
+                @else if (senha.errors?.['minlength']) { A senha deve ter pelo menos 6 caracteres. }
+              </div>
             </div>
           </div>
 
@@ -74,26 +101,36 @@
             <label for="confirmarSenha" class="form-label">Confirmar senha</label>
             <div class="input-group">
               <span class="input-group-text bg-white"><i class="fa-solid fa-lock icon-pet"></i></span>
-              <input type="password" class="form-control" id="confirmarSenha" placeholder="Repita a senha" required>
+              <input type="password" class="form-control" id="confirmarSenha" formControlName="confirmarSenha" placeholder="Repita a senha"
+                     [class.is-invalid]="(confirmarSenha.invalid || form.errors?.['senhasDiferentes']) && (confirmarSenha.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (confirmarSenha.errors?.['required']) { Repita a senha. }
+                @else { As senhas não conferem. }
+              </div>
             </div>
           </div>
         </div>
 
         <div class="form-check mb-4">
-          <input class="form-check-input" type="checkbox" id="termos" required>
+          <input class="form-check-input" type="checkbox" id="termos" formControlName="termos"
+                 [class.is-invalid]="termos.invalid && (termos.touched || enviado)">
           <label class="form-check-label" for="termos">
             Eu concordo com os <a class="link-pet">Termos de Uso</a> e a <a class="link-pet">Política de Privacidade</a>
           </label>
         </div>
 
+        @if (erro()) {
+          <div class="alert alert-danger py-2 small">{{ erro() }}</div>
+        }
+
         <div class="d-grid mb-3">
-          <button type="submit" class="btn btn-pet btn-lg">
-            <i class="fa-solid fa-user-plus me-2"></i>Cadastrar
+          <button type="submit" class="btn btn-pet btn-lg" [disabled]="carregando()">
+            <i class="fa-solid fa-user-plus me-2"></i>{{ carregando() ? 'Cadastrando...' : 'Cadastrar' }}
           </button>
         </div>
 
         <p class="text-center text-muted mb-0">
-          Já tem uma conta? <a href="login" class="link-pet fw-semibold">Faça login</a>
+          Já tem uma conta? <a routerLink="/login" class="link-pet fw-semibold">Faça login</a>
         </p>
       </form>
 

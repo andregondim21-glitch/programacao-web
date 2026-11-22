@@ -14,7 +14,14 @@
     <div class="card border-0 shadow-sm">
       <div class="card-body">
 
-        <div *ngIf="pedidoConfirmadoComSucesso" class="text-center py-4">
+        <div *ngIf="!pedidoConfirmadoComSucesso() && !auth.logado()" class="text-center py-4">
+          <p class="h6 fonte-marca mb-2" style="color: var(--ps-primary);">Entre para finalizar sua compra</p>
+          <p class="text-muted small mb-4">Precisamos da sua conta para registrar o pedido e a entrega.</p>
+          <a routerLink="/login" class="btn btn-brand me-2">Entrar</a>
+          <a routerLink="/cadastro" class="btn btn-outline-brand">Criar conta</a>
+        </div>
+
+        <div *ngIf="pedidoConfirmadoComSucesso()" class="text-center py-4">
           <p class="h5 fonte-marca mb-2" style="color: var(--ps-primary);">Pedido confirmado! 🎉</p>
           <p class="text-muted small mb-4">
             {{ nomePet ? 'Preparando tudo para o ' + nomePet + '.' : 'Preparando o seu pedido.' }}
@@ -22,14 +29,14 @@
           <a routerLink="/" class="btn btn-brand">Voltar para a loja</a>
         </div>
 
-        <form *ngIf="!pedidoConfirmadoComSucesso" [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
+        <form *ngIf="!pedidoConfirmadoComSucesso() && auth.logado()" [formGroup]="form" (ngSubmit)="confirmar()" novalidate>
 
           <fieldset class="mb-4">
             <legend class="h6 fw-semibold fonte-marca">Dados pessoais</legend>
 
             <div class="mb-3">
               <label for="nome" class="form-label small">Nome completo</label>
-              <input id="nome" type="text" class="form-control" formControlName="nome"
+              <input id="nome" type="text" class="form-control" formControlName="nome" readonly
                      [class.is-invalid]="nome.invalid && (nome.touched || enviado)"
                      placeholder="Ex: Maria Silva" />
               <div class="invalid-feedback">
@@ -41,7 +48,7 @@
             <div class="row g-3">
               <div class="col-12 col-sm-6">
                 <label for="email" class="form-label small">E-mail</label>
-                <input id="email" type="text" class="form-control" formControlName="email"
+                <input id="email" type="text" class="form-control" formControlName="email" readonly
                        [class.is-invalid]="email.invalid && (email.touched || enviado)"
                        placeholder="voce@email.com" />
                 <div class="invalid-feedback">
@@ -52,7 +59,7 @@
 
               <div class="col-12 col-sm-6">
                 <label for="cpf" class="form-label small">CPF</label>
-                <input id="cpf" type="text" class="form-control" formControlName="cpf"
+                <input id="cpf" type="text" class="form-control" formControlName="cpf" readonly
                        [class.is-invalid]="cpf.invalid && (cpf.touched || enviado)"
                        placeholder="000.000.000-00" />
                 <div class="invalid-feedback">
@@ -130,7 +137,7 @@
             <legend class="h6 fw-semibold fonte-marca">Itens do pedido</legend>
             <div class="d-flex justify-content-between small mb-1" *ngFor="let item of cartService.itens()">
               <span>{{ item.product.nome }} <span class="text-muted">x{{ item.quantidade }}</span></span>
-              <span>{{ item.product.preco * item.quantidade | currency: 'BRL' }}</span>
+              <span>{{ precoFinal(item.product) * item.quantidade | currency: 'BRL' }}</span>
             </div>
             <hr />
             <div class="d-flex justify-content-between fw-semibold">
@@ -139,7 +146,11 @@
             </div>
           </fieldset>
 
-          <button type="submit" class="btn btn-brand w-100">Confirmar pedido</button>
+          <div class="alert alert-danger py-2 small" *ngIf="erroApi()">{{ erroApi() }}</div>
+
+          <button type="submit" class="btn btn-brand w-100" [disabled]="enviando()">
+            {{ enviando() ? 'Enviando pedido...' : 'Confirmar pedido' }}
+          </button>
           <p class="small text-danger text-center mt-2 mb-0" *ngIf="enviado && form.invalid">
             Corrija os campos destacados para continuar.
           </p>

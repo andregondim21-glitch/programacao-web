@@ -1,0 +1,54 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="p-4 p-md-5">
+
+      <div class="text-center mb-4">
+        <i class="fa-solid fa-key fa-2x mb-2" style="color: #2d5a4a;"></i>
+        <h2 class="fw-bold">Esqueceu a senha?</h2>
+        <p class="text-muted">Informe o e-mail da sua conta para redefinir a senha</p>
+      </div>
+
+      @if (resposta(); as r) {
+        <div class="alert alert-success small">{{ r.mensagem }}</div>
+
+        <p class="text-muted small">
+          Confira sua caixa de entrada (e também o spam). O link para criar uma nova senha vale por 30 minutos.
+        </p>
+
+        <p class="text-center text-muted mb-0">
+          <a routerLink="/login" class="link-pet fw-semibold">Voltar para o login</a>
+        </p>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="solicitar()" novalidate>
+          <div class="mb-3">
+            <label for="email" class="form-label">E-mail</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="fa-solid fa-envelope icon-pet"></i></span>
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="seuemail@exemplo.com"
+                     [class.is-invalid]="email.invalid && (email.touched || enviado)">
+              <div class="invalid-feedback">
+                @if (email.errors?.['required']) { Informe seu e-mail. }
+                @else if (email.errors?.['email']) { Informe um e-mail válido. }
+              </div>
+            </div>
+          </div>
+
+          @if (erro()) {
+            <div class="alert alert-danger py-2 small">{{ erro() }}</div>
+          }
+
+          <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-pet btn-lg" [disabled]="carregando()">
+              {{ carregando() ? 'Enviando...' : 'Enviar instruções' }}
+            </button>
+          </div>
+
+          <p class="text-center text-muted mb-0">
+            Lembrou a senha? <a routerLink="/login" class="link-pet fw-semibold">Voltar para o login</a>
+          </p>
+        </form>
+      }
+
+    </div>
+  </div>
+</div>
